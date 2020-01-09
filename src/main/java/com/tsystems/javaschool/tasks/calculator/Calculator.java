@@ -15,48 +15,50 @@ public class Calculator {
 
 
     public String evaluate(String statement) {
-        if(statement==null)return null;
+        if (statement == null) return null;
         InToPost convertor = new InToPost(statement);
         postfix = convertor.doTrans();
         double val;
         double tmpResult = 0;
         double num1, num2;
-        if(postfix.isEmpty()) return null;
+        if (postfix.isEmpty()) return null;
         String[] tmp = postfix.split(" ");
-        for(int j=0; j<tmp.length; j++){
-            if(tmp[j].isEmpty())
+        for (int j = 0; j < tmp.length; j++) {
+            if (tmp[j].isEmpty())
                 return null;
-            if(!tmp[j].equals("+") && !tmp[j].equals("-") &&
-                    !tmp[j].equals("*") && !tmp[j].equals("/")){
-                try{
+            if (!tmp[j].equals("+") && !tmp[j].equals("-") &&
+                    !tmp[j].equals("*") && !tmp[j].equals("/")) {
+                try {
                     val = Double.valueOf(tmp[j]);
-                }catch(NumberFormatException ex){
+                } catch (NumberFormatException ex) {
                     return null;
                 }
                 stack.push(val);
-            }else{
+            } else {
                 num2 = Double.valueOf(stack.pop());
                 num1 = Double.valueOf(stack.pop());
-                if(tmp[j].equals("+")){
+                if (tmp[j].equals("+")) {
                     tmpResult = num1 + num2;
                 }
-                if(tmp[j].equals("-")){
+                if (tmp[j].equals("-")) {
                     tmpResult = num1 - num2;
                 }
-                if(tmp[j].equals("*")){
+                if (tmp[j].equals("*")) {
                     tmpResult = num1 * num2;
                 }
-                if(tmp[j].equals("/")){
-                    if(num2 == 0)
+                if (tmp[j].equals("/")) {
+                    if (num2 == 0)
                         return null;
                     tmpResult = num1 / num2;
                 }
                 stack.push(tmpResult);
             }
         }
-        int result=(int)tmpResult;
-        if(tmpResult-result!=0)return String.format("%.4f",tmpResult);
+        int result = (int) tmpResult;
+        String[] splitter = String.valueOf(tmpResult).split("\\.");
+        int dotsplitter = splitter[1].length();
+        if (tmpResult - result != 0 && dotsplitter >= 4) return String.format("%.4f", tmpResult);
+        else if (dotsplitter > 1 && dotsplitter < 4) return String.valueOf(tmpResult);
         return String.valueOf(result);
     }
-
 }
